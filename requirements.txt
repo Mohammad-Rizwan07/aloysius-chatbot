@@ -1,7 +1,17 @@
+# Core
 requests>=2.31.0
 beautifulsoup4>=4.12.2
 lxml>=5.1.0
+
+# Crawling
 crawl4ai>=0.4.0
+
+# Processing
 sentence-transformers>=2.6.1
-chromadb>=0.5.5
 torch>=2.1.0
+
+# Vector DB (PINNED)
+chromadb==0.4.24
+
+# NumPy (CRITICAL PIN)
+numpy<2.0
