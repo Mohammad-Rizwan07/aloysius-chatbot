@@ -6,3 +6,4 @@ __pycache__/
 
 # Ignore raw_markdown folder under data/
 data/raw_markdown/
+data/processed_chunks/
