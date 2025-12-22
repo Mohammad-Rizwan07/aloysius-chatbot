@@ -15,3 +15,6 @@ chromadb==0.4.24
 
 # NumPy (CRITICAL PIN)
 numpy<2.0
+
+#LLM
+ollama>=0.1.8
