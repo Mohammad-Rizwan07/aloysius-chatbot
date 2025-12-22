@@ -10,11 +10,15 @@ crawl4ai>=0.4.0
 sentence-transformers>=2.6.1
 torch>=2.1.0
 
-# Vector DB (PINNED)
+# Vector DB 
 chromadb==0.4.24
 
-# NumPy (CRITICAL PIN)
+# NumPy 
 numpy<2.0
 
 #LLM
 ollama>=0.1.8
+
+#UI
+fastapi>=0.110.0
+uvicorn>=0.27.0
