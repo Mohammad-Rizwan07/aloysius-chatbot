@@ -4,8 +4,23 @@ const chatForm = document.getElementById("chatForm");
 const input = document.getElementById("questionInput");
 const sendBtn = document.getElementById("sendBtn");
 const chatBox = document.getElementById("chatBox");
+const clearBtn = document.getElementById("clearChat");
 
 chatForm.addEventListener("submit", sendMessage);
+
+/* Enter to send, Shift+Enter for new line */
+input.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        chatForm.requestSubmit();
+    }
+});
+
+/* Clear chat */
+clearBtn.onclick = () => {
+    sessionStorage.clear();
+    location.reload();
+};
 
 async function sendMessage(e) {
     e.preventDefault();
@@ -22,16 +37,20 @@ async function sendMessage(e) {
     processing.className = "message bot-message";
     processing.innerHTML = `
         <div class="message-content processing-box">
-            <span id="processText">Retrieving information</span>
+            <span id="processText">Retrieving official information</span>
             <span class="processing-dot"></span>
         </div>`;
     chatBox.appendChild(processing);
     scrollToBottom();
 
-    const steps = ["Retrieving information", "Analyzing sources", "Preparing response"];
+    const steps = [
+        "Retrieving official information",
+        "Cross-checking sources",
+        "Formulating response"
+    ];
+
     let i = 0;
     const stepEl = processing.querySelector("#processText");
-
     const interval = setInterval(() => {
         i = (i + 1) % steps.length;
         stepEl.textContent = steps[i];
@@ -64,43 +83,50 @@ async function sendMessage(e) {
     }
 }
 
-/* ✅ Markdown → HTML renderer (ChatGPT-like) */
+/* Markdown renderer */
 function renderMarkdownToHtml(text) {
     let safe = text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-
-    // Bold **text**
-    safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        .replace(/>/g, "&gt;")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
     const lines = safe.split("\n");
     let html = "";
     let inList = false;
 
+    const closeList = () => {
+        if (inList) {
+            html += "</ul>";
+            inList = false;
+        }
+    };
+
     lines.forEach(line => {
-        if (line.trim().startsWith("* ")) {
+        line = line.trim();
+        if (!line) return closeList();
+
+        if (line.startsWith("### ")) {
+            closeList();
+            return html += `<h4>${line.substring(4)}</h4>`;
+        }
+
+        if (line.startsWith("* ")) {
             if (!inList) {
                 html += "<ul>";
                 inList = true;
             }
-            html += `<li>${line.replace("* ", "").trim()}</li>`;
-        } else {
-            if (inList) {
-                html += "</ul>";
-                inList = false;
-            }
-            if (line.trim()) {
-                html += `<p>${line}</p>`;
-            }
+            return html += `<li>${line.substring(2)}</li>`;
         }
+
+        closeList();
+        html += `<p>${line}</p>`;
     });
 
-    if (inList) html += "</ul>";
+    closeList();
     return html;
 }
 
-/* Render message */
 function addMessage(text, sender, sources = []) {
     const msg = document.createElement("div");
     msg.className = `message ${sender}-message`;
@@ -108,7 +134,9 @@ function addMessage(text, sender, sources = []) {
     let html = `<div class="message-content">`;
 
     if (sender === "bot") {
+        html += `<div class="bot-badge">Official University Information</div>`;
         html += renderMarkdownToHtml(text);
+        html += `<div class="answer-divider"></div>`;
     } else {
         html += escapeHtml(text);
     }
@@ -131,9 +159,7 @@ function addMessage(text, sender, sources = []) {
 }
 
 function scrollToBottom() {
-    requestAnimationFrame(() => {
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 function copyText(btn) {

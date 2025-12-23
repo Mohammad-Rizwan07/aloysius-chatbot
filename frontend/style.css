@@ -29,6 +29,7 @@ body {
 }
 
 .header {
+    position: relative;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     padding: 25px;
@@ -42,6 +43,18 @@ body {
 .header p {
     font-size: 14px;
     opacity: 0.95;
+}
+
+/* Clear button */
+#clearChat {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 12px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
 }
 
 .chat-box {
@@ -81,13 +94,24 @@ body {
     color: #333;
 }
 
+/* Official badge */
+.bot-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    background: #e8f0fe;
+    color: #1a73e8;
+    border-radius: 10px;
+    margin-bottom: 6px;
+}
+
 .disclaimer {
     font-size: 12px;
     color: #666;
     margin-top: 6px;
 }
 
-/* ✅ Markdown-rendered list styling */
+/* Markdown styling */
 .message-content ul {
     padding-left: 18px;
     margin: 8px 0;
@@ -101,9 +125,26 @@ body {
     margin-bottom: 8px;
 }
 
+.message-content h4 {
+    margin: 10px 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* Divider */
+.answer-divider {
+    height: 1px;
+    background: #e6e6e6;
+    margin: 10px 0;
+}
+
+/* Sources */
 .sources {
     font-size: 12px;
-    margin-top: 8px;
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px dashed #ccc;
+    color: #555;
 }
 
 .copy-btn {
@@ -123,9 +164,7 @@ body {
     padding: 10px 14px;
     border-radius: 10px;
     font-size: 13px;
-    color: #444;
     display: flex;
-    align-items: center;
     gap: 8px;
 }
 
@@ -138,9 +177,9 @@ body {
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); opacity: .5; }
-    50% { transform: scale(1.4); opacity: 1; }
-    100% { transform: scale(1); opacity: .5; }
+    0% { opacity: .5; }
+    50% { opacity: 1; }
+    100% { opacity: .5; }
 }
 
 .input-area {
@@ -165,10 +204,6 @@ body {
     border-color: #667eea;
 }
 
-#questionInput:disabled {
-    background: #f1f3f4;
-}
-
 #sendBtn {
     margin-left: 10px;
     padding: 10px 18px;
@@ -178,11 +213,6 @@ body {
     color: white;
     font-weight: 600;
     cursor: pointer;
-}
-
-#sendBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
 }
 
 /* Animated placeholder */
@@ -204,7 +234,6 @@ body {
     display: flex;
     align-items: center;
     color: #999;
-    font-size: 14px;
 }
 
 #questionInput:focus + .text-mask,
