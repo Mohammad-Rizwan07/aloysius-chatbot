@@ -1,109 +1,115 @@
 const API_BASE_URL = "http://localhost:8000/api/v1";
 
+/* Send Message */
 async function sendMessage(event) {
     event.preventDefault();
-    
+
     const input = document.getElementById("questionInput");
     const chatBox = document.getElementById("chatBox");
     const question = input.value.trim();
-    
+
     if (!question) return;
-    
-    // Add user message to chat
-    addMessageToChat(question, 'user');
+
+    addMessage(question, "user");
     input.value = "";
-    input.disabled = true;
-    document.getElementById("sendBtn").disabled = true;
-    
-    // Show typing indicator
-    const typingDiv = document.createElement("div");
-    typingDiv.className = "message bot-message";
-    typingDiv.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-    chatBox.appendChild(typingDiv);
+
+    const typing = document.createElement("div");
+    typing.className = "message bot-message";
+    typing.innerHTML = `<div class="message-content">Typing...</div>`;
+    chatBox.appendChild(typing);
     chatBox.scrollTop = chatBox.scrollHeight;
-    
+
     try {
         const response = await fetch(`${API_BASE_URL}/chat`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ question })
         });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
+
         const data = await response.json();
-        
-        // Remove typing indicator
-        typingDiv.remove();
-        
-        // Add bot response
-        addMessageToChat(data.answer, 'bot', data.sources, data.confidence);
-        
+        typing.remove();
+        addMessage(data.answer, "bot", data.sources, data.confidence);
+
     } catch (error) {
-        typingDiv.remove();
-        console.error("Error:", error);
-        addMessageToChat(
-            "Sorry, I encountered an error while processing your question. Please try again.",
-            'bot'
-        );
-    } finally {
-        input.disabled = false;
-        document.getElementById("sendBtn").disabled = false;
-        input.focus();
+        typing.remove();
+        addMessage("An error occurred. Please try again.", "bot");
     }
 }
 
-function addMessageToChat(message, sender, sources = [], confidence = null) {
+/* Render Message */
+function addMessage(text, sender, sources = [], confidence = null) {
     const chatBox = document.getElementById("chatBox");
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `message ${sender}-message`;
-    
-    let content = `<div class="message-content"><p>${escapeHtml(message)}</p>`;
-    
-    if (sender === 'bot' && (sources.length > 0 || confidence !== null)) {
-        if (sources.length > 0) {
-            content += `<div class="sources-section">`;
-            content += `<div class="sources-title">📚 Sources</div>`;
-            sources.forEach(source => {
-                content += `<div class="source-item">• ${escapeHtml(source)}</div>`;
+    const msg = document.createElement("div");
+    msg.className = `message ${sender}-message`;
+
+    let html = `<div class="message-content">${escapeHtml(text)}`;
+
+    if (sender === "bot") {
+        if (sources.length) {
+            html += `<div class="sources"><strong>Sources:</strong>`;
+            sources.forEach(src => {
+                html += `<div><a href="${src}" target="_blank">${src}</a></div>`;
             });
-            content += `</div>`;
+            html += `</div>`;
         }
-        
+
         if (confidence !== null) {
-            const confidencePercent = Math.round(confidence * 100);
-            const confidenceColor = confidencePercent >= 75 ? '#2e7d32' : 
-                                   confidencePercent >= 50 ? '#f57c00' : '#c62828';
-            content += `<div class="confidence-badge" style="background-color: ${confidenceColor}20; color: ${confidenceColor};">
-                Confidence: ${confidencePercent}%
-            </div>`;
+            html += `<div class="confidence">Confidence: ${Math.round(confidence * 100)}%</div>`;
         }
+
+        html += `<button class="copy-btn" onclick="copyText(this)">Copy</button>`;
     }
-    
-    content += `</div>`;
-    messageDiv.innerHTML = content;
-    
-    chatBox.appendChild(messageDiv);
+
+    html += `</div>`;
+    msg.innerHTML = html;
+    chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
+
+    localStorage.setItem("chat_history", chatBox.innerHTML);
+}
+
+/* Utilities */
+function copyText(btn) {
+    navigator.clipboard.writeText(btn.parentElement.innerText);
+    btn.innerText = "Copied!";
+    setTimeout(() => btn.innerText = "Copy", 1500);
 }
 
 function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    return text.replace(/[&<>"']/g, m =>
+        ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])
+    );
 }
 
-// Allow Enter key to send message
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById("questionInput");
-    input.focus();
+/* Restore Chat */
+window.onload = () => {
+    const saved = localStorage.getItem("chat_history");
+    if (saved) {
+        document.getElementById("chatBox").innerHTML = saved;
+    }
+};
+
+/* Animated Placeholder Logic */
+document.addEventListener("DOMContentLoaded", () => {
+    const strip = document.getElementById("textStrip");
+    const firstItem = strip.children[0].cloneNode(true);
+    strip.appendChild(firstItem);
+
+    let index = 0;
+    const itemHeight = 40;
+    const total = strip.children.length;
+
+    setInterval(() => {
+        index++;
+        strip.style.transition = "transform 0.8s ease";
+        strip.style.transform = `translateY(-${index * itemHeight}px)`;
+
+        if (index === total - 1) {
+            strip.addEventListener("transitionend", () => {
+                strip.style.transition = "none";
+                strip.style.transform = "translateY(0)";
+                index = 0;
+            }, { once: true });
+        }
+    }, 2600);
 });

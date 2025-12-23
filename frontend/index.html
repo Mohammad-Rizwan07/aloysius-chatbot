@@ -7,44 +7,59 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="chat-wrapper">
-            <div class="header">
-                <h1>St. Aloysius University</h1>
-                <p>AI Assistant</p>
-            </div>
 
-            <div class="chat-box" id="chatBox">
-                <div class="message bot-message">
-                    <div class="message-content">
-                        <p>Hello! I'm your St. Aloysius University AI Assistant. Ask me anything about the university - courses, admissions, facilities, and more!</p>
-                    </div>
+<div class="container">
+    <div class="chat-wrapper">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>St. Aloysius University</h1>
+            <p>AI Assistant</p>
+        </div>
+
+        <!-- CHAT BOX -->
+        <div class="chat-box" id="chatBox">
+            <div class="message bot-message">
+                <div class="message-content">
+                    <p>
+                        Hello! I’m the St. Aloysius University AI Assistant.  
+                        I can help you with admissions, programs, fees, facilities, and more.
+                    </p>
                 </div>
             </div>
-
-            <div class="input-area">
-                <form id="chatForm" onsubmit="sendMessage(event)">
-                    <div class="input-wrapper">
-                        <input 
-                            type="text" 
-                            id="questionInput" 
-                            placeholder="Ask your question..." 
-                            autocomplete="off"
-                            required
-                        >
-                        <button type="submit" id="sendBtn">
-                            <span>Send</span>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
-    </div>
 
-    <script src="app.js"></script>
+        <!-- INPUT AREA -->
+        <div class="input-area">
+            <form id="chatForm" onsubmit="sendMessage(event)">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="questionInput" 
+                        required 
+                        autocomplete="off"
+                    >
+
+                    <!-- Animated Professional Placeholder -->
+                    <div class="text-mask">
+                        <div class="text-strip" id="textStrip">
+                            <div class="text-item">Admissions information</div>
+                            <div class="text-item">Programs and courses offered</div>
+                            <div class="text-item">Fees, scholarships, and funding</div>
+                            <div class="text-item">Placements and career support</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="sendBtn">
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
