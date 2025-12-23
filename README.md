@@ -33,7 +33,7 @@ Phase 7: FastAPI Server & Responses
 ## 📋 Prerequisites
 
 - Python 3.9+
-- Google Gemini API Key (paid version)
+- Google Gemini API Key (free or paid)
 - Git
 
 ## 🚀 Installation
