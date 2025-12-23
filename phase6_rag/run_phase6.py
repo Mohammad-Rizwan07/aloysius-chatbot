@@ -10,7 +10,7 @@ def main():
     llm = get_llm()
 
     while True:
-        user_question = input("Question: ")
+        user_question = input("Question: ").strip()
         if user_question.lower() in ["exit", "quit"]:
             break
 
@@ -19,15 +19,15 @@ def main():
         context_chunks, metadatas = retrieve_context(query_embedding)
         print(f"    Found {len(context_chunks)} relevant chunks")
 
+        # Build RAG prompt (NO system prompt here)
         prompt = build_prompt(context_chunks, user_question)
-        
-        print("[*] Generating answer with Gemini...")
-        system_prompt = """You are a helpful assistant for St. Aloysius University. 
-Answer questions based on the provided context about the university. 
-Be concise and accurate."""
-        answer = llm.generate_with_context(user_question, context_chunks, system_prompt)
 
-        print("\nAnswer:", answer)
+        print("[*] Generating answer with Gemini...")
+        answer = llm.generate(prompt)
+
+        print("\nAnswer:\n")
+        print(answer)
+
         print("\n--- Sources ---")
         urls_shown = set()
         for meta in metadatas:

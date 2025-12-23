@@ -1,18 +1,22 @@
 def build_prompt(context_chunks, user_question):
-    context_text = "\n\n".join(context_chunks)
+    context_text = "\n\n".join(
+        [f"- {chunk}" for chunk in context_chunks]
+    )
 
     prompt = f"""
-You are an official AI assistant for St. Aloysius University.
-Answer the question strictly using the provided context.
-If the answer is not found in the context, say:
-"I do not have this information from the official website."
+Answer the question using ONLY the context below.
 
-Context:
+CONTEXT:
 {context_text}
 
-Question:
+QUESTION:
 {user_question}
 
-Answer:
+INSTRUCTIONS:
+- Follow the structured response format.
+- Use headings and bullet points.
+- Do not include information outside the context.
+
+ANSWER:
 """
     return prompt.strip()

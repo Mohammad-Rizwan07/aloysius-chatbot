@@ -18,7 +18,6 @@ async function sendMessage(e) {
     input.disabled = true;
     sendBtn.disabled = true;
 
-    /* AI Processing animation */
     const processing = document.createElement("div");
     processing.className = "message bot-message";
     processing.innerHTML = `
@@ -29,17 +28,13 @@ async function sendMessage(e) {
     chatBox.appendChild(processing);
     scrollToBottom();
 
-    const steps = [
-        "Retrieving information",
-        "Analyzing sources",
-        "Preparing response"
-    ];
-    let stepIndex = 0;
+    const steps = ["Retrieving information", "Analyzing sources", "Preparing response"];
+    let i = 0;
     const stepEl = processing.querySelector("#processText");
 
     const interval = setInterval(() => {
-        stepIndex = (stepIndex + 1) % steps.length;
-        stepEl.textContent = steps[stepIndex];
+        i = (i + 1) % steps.length;
+        stepEl.textContent = steps[i];
     }, 700);
 
     try {
@@ -54,7 +49,7 @@ async function sendMessage(e) {
         processing.remove();
 
         addMessage(
-            data.answer || "I couldn’t find official information on that.",
+            data.answer || "I do not have this information from the official website.",
             "bot",
             data.sources || []
         );
@@ -69,12 +64,54 @@ async function sendMessage(e) {
     }
 }
 
+/* ✅ Markdown → HTML renderer (ChatGPT-like) */
+function renderMarkdownToHtml(text) {
+    let safe = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    // Bold **text**
+    safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+    const lines = safe.split("\n");
+    let html = "";
+    let inList = false;
+
+    lines.forEach(line => {
+        if (line.trim().startsWith("* ")) {
+            if (!inList) {
+                html += "<ul>";
+                inList = true;
+            }
+            html += `<li>${line.replace("* ", "").trim()}</li>`;
+        } else {
+            if (inList) {
+                html += "</ul>";
+                inList = false;
+            }
+            if (line.trim()) {
+                html += `<p>${line}</p>`;
+            }
+        }
+    });
+
+    if (inList) html += "</ul>";
+    return html;
+}
+
 /* Render message */
 function addMessage(text, sender, sources = []) {
     const msg = document.createElement("div");
     msg.className = `message ${sender}-message`;
 
-    let html = `<div class="message-content">${escapeHtml(text)}`;
+    let html = `<div class="message-content">`;
+
+    if (sender === "bot") {
+        html += renderMarkdownToHtml(text);
+    } else {
+        html += escapeHtml(text);
+    }
 
     if (sender === "bot" && sources.length) {
         html += `<div class="sources"><strong>Sources:</strong>`;
@@ -111,29 +148,7 @@ function escapeHtml(text) {
     );
 }
 
-/* Restore session */
 window.onload = () => {
     const saved = sessionStorage.getItem("chat_history");
     if (saved) chatBox.innerHTML = saved;
 };
-
-/* Animated placeholder */
-document.addEventListener("DOMContentLoaded", () => {
-    const strip = document.getElementById("textStrip");
-    strip.appendChild(strip.children[0].cloneNode(true));
-    let i = 0;
-
-    setInterval(() => {
-        i++;
-        strip.style.transition = "transform 0.8s ease";
-        strip.style.transform = `translateY(-${i * 40}px)`;
-
-        if (i === strip.children.length - 1) {
-            strip.addEventListener("transitionend", () => {
-                strip.style.transition = "none";
-                strip.style.transform = "translateY(0)";
-                i = 0;
-            }, { once: true });
-        }
-    }, 2600);
-});

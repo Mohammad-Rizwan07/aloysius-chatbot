@@ -87,6 +87,20 @@ body {
     margin-top: 6px;
 }
 
+/* ✅ Markdown-rendered list styling */
+.message-content ul {
+    padding-left: 18px;
+    margin: 8px 0;
+}
+
+.message-content li {
+    margin-bottom: 6px;
+}
+
+.message-content p {
+    margin-bottom: 8px;
+}
+
 .sources {
     font-size: 12px;
     margin-top: 8px;
