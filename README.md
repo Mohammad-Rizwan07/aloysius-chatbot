@@ -23,7 +23,7 @@ Phase 3: Advanced Processing & Semantic Chunking
     ↓
 Phase 4: Embedding & Vector Storage
     ↓
-Phase 5: Change Detection & Updates
+Phase 5: Change Detection & Updates (In future)
     ↓
 Phase 6: RAG Retrieval
     ↓
