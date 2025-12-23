@@ -1,17 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>St. Aloysius University Chatbot</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Aloysius University AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>🎓 St. Aloysius University AI Assistant</h2>
+    <div class="container">
+        <div class="chat-wrapper">
+            <div class="header">
+                <h1>🎓 St. Aloysius University</h1>
+                <p>AI Assistant</p>
+            </div>
 
-  <div id="chat"></div>
+            <div class="chat-box" id="chatBox">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <p>👋 Hello! I'm your St. Aloysius University AI Assistant. Ask me anything about the university - courses, admissions, facilities, and more!</p>
+                    </div>
+                </div>
+            </div>
 
-  <input id="question" placeholder="Ask a question..." />
-  <button onclick="send()">Send</button>
+            <div class="input-area">
+                <form id="chatForm" onsubmit="sendMessage(event)">
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="questionInput" 
+                            placeholder="Ask your question..." 
+                            autocomplete="off"
+                            required
+                        >
+                        <button type="submit" id="sendBtn">
+                            <span>Send</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
