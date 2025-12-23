@@ -28,7 +28,7 @@ async function sendMessage(event) {
 
         const data = await response.json();
         typing.remove();
-        addMessage(data.answer, "bot", data.sources, data.confidence);
+        addMessage(data.answer, "bot", data.sources);
 
     } catch (error) {
         typing.remove();
@@ -37,26 +37,19 @@ async function sendMessage(event) {
 }
 
 /* Render Message */
-function addMessage(text, sender, sources = [], confidence = null) {
+function addMessage(text, sender, sources = []) {
     const chatBox = document.getElementById("chatBox");
     const msg = document.createElement("div");
     msg.className = `message ${sender}-message`;
 
     let html = `<div class="message-content">${escapeHtml(text)}`;
 
-    if (sender === "bot") {
-        if (sources.length) {
-            html += `<div class="sources"><strong>Sources:</strong>`;
-            sources.forEach(src => {
-                html += `<div><a href="${src}" target="_blank">${src}</a></div>`;
-            });
-            html += `</div>`;
-        }
-
-        if (confidence !== null) {
-            html += `<div class="confidence">Confidence: ${Math.round(confidence * 100)}%</div>`;
-        }
-
+    if (sender === "bot" && sources.length) {
+        html += `<div class="sources"><strong>Sources:</strong>`;
+        sources.forEach(src => {
+            html += `<div><a href="${src}" target="_blank">${src}</a></div>`;
+        });
+        html += `</div>`;
         html += `<button class="copy-btn" onclick="copyText(this)">Copy</button>`;
     }
 
