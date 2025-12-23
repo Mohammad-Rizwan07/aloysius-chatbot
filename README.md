@@ -41,7 +41,7 @@ Phase 7: FastAPI Server & Responses
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Mohammad-Rizwan07/aloysius-chatbot
 cd aloysius-chatbot
 ```
 
