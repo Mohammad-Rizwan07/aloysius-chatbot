@@ -58,7 +58,7 @@ function addMessage(text, sender, sources = []) {
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    localStorage.setItem("chat_history", chatBox.innerHTML);
+    sessionStorage.setItem("chat_history", chatBox.innerHTML);
 }
 
 /* Utilities */
@@ -76,7 +76,7 @@ function escapeHtml(text) {
 
 /* Restore Chat */
 window.onload = () => {
-    const saved = localStorage.getItem("chat_history");
+    const saved = sessionStorage.getItem("chat_history");
     if (saved) {
         document.getElementById("chatBox").innerHTML = saved;
     }
