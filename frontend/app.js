@@ -1,44 +1,76 @@
 const API_BASE_URL = "http://localhost:8000/api/v1";
 
-/* Send Message */
-async function sendMessage(event) {
-    event.preventDefault();
+const chatForm = document.getElementById("chatForm");
+const input = document.getElementById("questionInput");
+const sendBtn = document.getElementById("sendBtn");
+const chatBox = document.getElementById("chatBox");
 
-    const input = document.getElementById("questionInput");
-    const chatBox = document.getElementById("chatBox");
+chatForm.addEventListener("submit", sendMessage);
+
+async function sendMessage(e) {
+    e.preventDefault();
+
     const question = input.value.trim();
-
     if (!question) return;
 
     addMessage(question, "user");
     input.value = "";
+    input.disabled = true;
+    sendBtn.disabled = true;
 
-    const typing = document.createElement("div");
-    typing.className = "message bot-message";
-    typing.innerHTML = `<div class="message-content">Typing...</div>`;
-    chatBox.appendChild(typing);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    /* AI Processing animation */
+    const processing = document.createElement("div");
+    processing.className = "message bot-message";
+    processing.innerHTML = `
+        <div class="message-content processing-box">
+            <span id="processText">Retrieving information</span>
+            <span class="processing-dot"></span>
+        </div>`;
+    chatBox.appendChild(processing);
+    scrollToBottom();
+
+    const steps = [
+        "Retrieving information",
+        "Analyzing sources",
+        "Preparing response"
+    ];
+    let stepIndex = 0;
+    const stepEl = processing.querySelector("#processText");
+
+    const interval = setInterval(() => {
+        stepIndex = (stepIndex + 1) % steps.length;
+        stepEl.textContent = steps[stepIndex];
+    }, 700);
 
     try {
-        const response = await fetch(`${API_BASE_URL}/chat`, {
+        const res = await fetch(`${API_BASE_URL}/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ question })
         });
 
-        const data = await response.json();
-        typing.remove();
-        addMessage(data.answer, "bot", data.sources);
+        const data = await res.json();
+        clearInterval(interval);
+        processing.remove();
 
-    } catch (error) {
-        typing.remove();
+        addMessage(
+            data.answer || "I couldn’t find official information on that.",
+            "bot",
+            data.sources || []
+        );
+    } catch {
+        clearInterval(interval);
+        processing.remove();
         addMessage("An error occurred. Please try again.", "bot");
+    } finally {
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
     }
 }
 
-/* Render Message */
+/* Render message */
 function addMessage(text, sender, sources = []) {
-    const chatBox = document.getElementById("chatBox");
     const msg = document.createElement("div");
     msg.className = `message ${sender}-message`;
 
@@ -56,12 +88,17 @@ function addMessage(text, sender, sources = []) {
     html += `</div>`;
     msg.innerHTML = html;
     chatBox.appendChild(msg);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    scrollToBottom();
 
     sessionStorage.setItem("chat_history", chatBox.innerHTML);
 }
 
-/* Utilities */
+function scrollToBottom() {
+    requestAnimationFrame(() => {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+}
+
 function copyText(btn) {
     navigator.clipboard.writeText(btn.parentElement.innerText);
     btn.innerText = "Copied!";
@@ -74,34 +111,28 @@ function escapeHtml(text) {
     );
 }
 
-/* Restore Chat */
+/* Restore session */
 window.onload = () => {
     const saved = sessionStorage.getItem("chat_history");
-    if (saved) {
-        document.getElementById("chatBox").innerHTML = saved;
-    }
+    if (saved) chatBox.innerHTML = saved;
 };
 
-/* Animated Placeholder Logic */
+/* Animated placeholder */
 document.addEventListener("DOMContentLoaded", () => {
     const strip = document.getElementById("textStrip");
-    const firstItem = strip.children[0].cloneNode(true);
-    strip.appendChild(firstItem);
-
-    let index = 0;
-    const itemHeight = 40;
-    const total = strip.children.length;
+    strip.appendChild(strip.children[0].cloneNode(true));
+    let i = 0;
 
     setInterval(() => {
-        index++;
+        i++;
         strip.style.transition = "transform 0.8s ease";
-        strip.style.transform = `translateY(-${index * itemHeight}px)`;
+        strip.style.transform = `translateY(-${i * 40}px)`;
 
-        if (index === total - 1) {
+        if (i === strip.children.length - 1) {
             strip.addEventListener("transitionend", () => {
                 strip.style.transition = "none";
                 strip.style.transform = "translateY(0)";
-                index = 0;
+                i = 0;
             }, { once: true });
         }
     }, 2600);

@@ -17,7 +17,7 @@
             <p>AI Assistant</p>
         </div>
 
-        <!-- CHAT BOX -->
+        <!-- CHAT -->
         <div class="chat-box" id="chatBox">
             <div class="message bot-message">
                 <div class="message-content">
@@ -25,19 +25,22 @@
                         Hello! I’m the St. Aloysius University AI Assistant.  
                         I can help you with admissions, programs, fees, facilities, and more.
                     </p>
+                    <p class="disclaimer">
+                        Responses are generated using officially published university information.
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- INPUT AREA -->
+        <!-- INPUT -->
         <div class="input-area">
-            <form id="chatForm" onsubmit="sendMessage(event)">
+            <form id="chatForm">
                 <div class="input-wrapper">
-                    <input 
-                        type="text" 
-                        id="questionInput" 
-                        required 
+                    <input
+                        type="text"
+                        id="questionInput"
                         autocomplete="off"
+                        required
                     >
 
                     <!-- Animated Placeholder -->

@@ -9,8 +9,8 @@ body {
     background: linear-gradient(135deg, #667eea, #764ba2);
     min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
 .container {
@@ -37,7 +37,6 @@ body {
 
 .header h1 {
     font-size: 26px;
-    margin-bottom: 4px;
 }
 
 .header p {
@@ -68,7 +67,7 @@ body {
     border-radius: 12px;
     max-width: 85%;
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .user-message .message-content {
@@ -82,30 +81,61 @@ body {
     color: #333;
 }
 
-.sources {
-    margin-top: 8px;
+.disclaimer {
     font-size: 12px;
+    color: #666;
+    margin-top: 6px;
+}
+
+.sources {
+    font-size: 12px;
+    margin-top: 8px;
 }
 
 .copy-btn {
     margin-top: 6px;
     font-size: 11px;
-    background: #e0e0e0;
-    border: none;
     padding: 4px 8px;
+    border: none;
     border-radius: 6px;
+    background: #e0e0e0;
     cursor: pointer;
+}
+
+/* Processing animation */
+.processing-box {
+    background: #f1f3f4;
+    border-left: 4px solid #667eea;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.processing-dot {
+    width: 6px;
+    height: 6px;
+    background: #667eea;
+    border-radius: 50%;
+    animation: pulse 1.4s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: .5; }
+    50% { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(1); opacity: .5; }
 }
 
 .input-area {
     padding: 15px;
     border-top: 1px solid #ddd;
-    background: white;
 }
 
 .input-wrapper {
     display: flex;
-    align-items: center;
     position: relative;
 }
 
@@ -114,12 +144,15 @@ body {
     padding: 12px 16px;
     border-radius: 25px;
     border: 2px solid #ddd;
-    font-size: 14px;
 }
 
 #questionInput:focus {
     outline: none;
     border-color: #667eea;
+}
+
+#questionInput:disabled {
+    background: #f1f3f4;
 }
 
 #sendBtn {
@@ -129,17 +162,22 @@ body {
     border: none;
     background: #667eea;
     color: white;
-    cursor: pointer;
     font-weight: 600;
+    cursor: pointer;
 }
 
-/* Animated Placeholder */
+#sendBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Animated placeholder */
 .text-mask {
     position: absolute;
     left: 18px;
-    pointer-events: none;
     height: 40px;
     overflow: hidden;
+    pointer-events: none;
 }
 
 .text-strip {
@@ -153,7 +191,6 @@ body {
     align-items: center;
     color: #999;
     font-size: 14px;
-    white-space: nowrap;
 }
 
 #questionInput:focus + .text-mask,
