@@ -7,7 +7,7 @@ import os
 import re
 import json
 import requests
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, quote
 from bs4 import BeautifulSoup
 import string
 
@@ -72,6 +72,7 @@ def discover_pdfs_from_html(html, page_url):
         href = a['href']
         if href.lower().endswith('.pdf'):
             pdf_url = urljoin(page_url, href)
+            pdf_url = quote(pdf_url, safe=':/')  # Encode spaces and unsafe chars
             link_text = a.get_text(strip=True)
             doc_type, year = classify_pdf(pdf_url, link_text)
             pdfs.append({
