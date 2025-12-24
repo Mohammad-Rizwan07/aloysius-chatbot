@@ -10,6 +10,7 @@ import requests
 from urllib.parse import urljoin, urlparse, quote
 from bs4 import BeautifulSoup
 import string
+import datetime
 
 
 URL_REGISTRY_PATH = os.path.join('data', 'url_registry.json')
@@ -75,11 +76,16 @@ def discover_pdfs_from_html(html, page_url):
             pdf_url = quote(pdf_url, safe=':/')  # Encode spaces and unsafe chars
             link_text = a.get_text(strip=True)
             doc_type, year = classify_pdf(pdf_url, link_text)
+            source_domain = urlparse(pdf_url).netloc
+            date_discovered = datetime.datetime.utcnow().isoformat() + 'Z'
             pdfs.append({
-                'pdf_url': pdf_url,  # Preserve original URL
-                'source_page': page_url,  # Preserve original source page
-                'document_type': doc_type,  # Preserve original document type
-                'year': year  # Preserve original year
+                'pdf_url': pdf_url,
+                'source_page': page_url,
+                'source_domain': source_domain,
+                'link_text': link_text,
+                'document_type': doc_type,
+                'year': year,
+                'date_discovered': date_discovered
             })
     return pdfs
 
