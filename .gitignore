@@ -55,6 +55,9 @@ data/processed_chunks/
 data/raw_markdown/
 data/pdf_text/
 data/temp_pdfs/
+data/processed_chunks_pdfs/
+data/pdf_markdown/
+data/clean_markdown/
 
 # Cache
 .pytest_cache/
