@@ -53,6 +53,8 @@ logs/
 data/vector_db/
 data/processed_chunks/
 data/raw_markdown/
+data/pdf_text/
+data/temp_pdfs/
 
 # Cache
 .pytest_cache/

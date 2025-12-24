@@ -1,3 +1,6 @@
+# For PDF extraction and download
+PyPDF2
+requests
 # Core
 requests>=2.31.0
 beautifulsoup4>=4.12.2
