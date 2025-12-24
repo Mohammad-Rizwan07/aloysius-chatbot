@@ -6,9 +6,57 @@ const sendBtn = document.getElementById("sendBtn");
 const chatBox = document.getElementById("chatBox");
 const clearBtn = document.getElementById("clearChat");
 
+// --- INITIALIZATION ---
+window.onload = () => {
+    // 1. Restore Chat History
+    const saved = sessionStorage.getItem("chat_history");
+    if (saved) chatBox.innerHTML = saved;
+    scrollToBottom();
+
+    // 2. Start the GPay-style Animation
+    initPlaceholderAnimation();
+};
+
+/* --- ANIMATION LOGIC --- */
+function initPlaceholderAnimation() {
+    const strip = document.getElementById('textStrip');
+    if (!strip) return;
+
+    // Clone the first item to create the infinite loop illusion
+    const firstItem = strip.children[0];
+    const clone = firstItem.cloneNode(true);
+    strip.appendChild(clone);
+
+    const itemHeight = 50; // Must match CSS .text-item height
+    const totalItems = strip.children.length; 
+    let currentIndex = 0;
+
+    function nextSlide() {
+        currentIndex++;
+        
+        // Smooth transition
+        strip.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+        strip.style.transform = `translateY(-${currentIndex * itemHeight}px)`;
+
+        // Check if we hit the clone (last item)
+        if (currentIndex === totalItems - 1) {
+            strip.addEventListener('transitionend', function() {
+                // Snap back to top instantly without animation
+                strip.style.transition = 'none';
+                currentIndex = 0;
+                strip.style.transform = `translateY(0px)`;
+            }, { once: true });
+        }
+    }
+
+    // Run every 3 seconds
+    setInterval(nextSlide, 3000);
+}
+
+/* --- CHAT LOGIC --- */
+
 chatForm.addEventListener("submit", sendMessage);
 
-/* Enter to send, Shift+Enter for new line */
 input.addEventListener("keydown", e => {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -16,7 +64,6 @@ input.addEventListener("keydown", e => {
     }
 });
 
-/* Clear chat */
 clearBtn.onclick = () => {
     sessionStorage.clear();
     location.reload();
@@ -33,6 +80,7 @@ async function sendMessage(e) {
     input.disabled = true;
     sendBtn.disabled = true;
 
+    // Create Processing Bubble
     const processing = document.createElement("div");
     processing.className = "message bot-message";
     processing.innerHTML = `
@@ -43,12 +91,8 @@ async function sendMessage(e) {
     chatBox.appendChild(processing);
     scrollToBottom();
 
-    const steps = [
-        "Retrieving official information",
-        "Cross-checking sources",
-        "Formulating response"
-    ];
-
+    // Simple text cycler for processing state
+    const steps = ["Retrieving official information", "Cross-checking sources", "Formulating response"];
     let i = 0;
     const stepEl = processing.querySelector("#processText");
     const interval = setInterval(() => {
@@ -83,7 +127,6 @@ async function sendMessage(e) {
     }
 }
 
-/* Markdown renderer */
 function renderMarkdownToHtml(text) {
     let safe = text
         .replace(/&/g, "&amp;")
@@ -173,8 +216,3 @@ function escapeHtml(text) {
         ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])
     );
 }
-
-window.onload = () => {
-    const saved = sessionStorage.getItem("chat_history");
-    if (saved) chatBox.innerHTML = saved;
-};

@@ -26,8 +26,10 @@ body {
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    overflow: hidden; /* Keeps header corners rounded */
 }
 
+/* HEADER */
 .header {
     position: relative;
     background: linear-gradient(135deg, #667eea, #764ba2);
@@ -38,6 +40,7 @@ body {
 
 .header h1 {
     font-size: 26px;
+    margin-bottom: 5px;
 }
 
 .header p {
@@ -45,18 +48,24 @@ body {
     opacity: 0.95;
 }
 
-/* Clear button */
 #clearChat {
     position: absolute;
     right: 20px;
     top: 20px;
     font-size: 12px;
-    background: transparent;
+    background: rgba(255,255,255,0.2);
     border: none;
     color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
+#clearChat:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* CHAT BOX */
 .chat-box {
     flex: 1;
     padding: 20px;
@@ -86,18 +95,22 @@ body {
 .user-message .message-content {
     background: #667eea;
     color: white;
+    border-bottom-right-radius: 2px;
 }
 
 .bot-message .message-content {
     background: white;
     border-left: 4px solid #667eea;
     color: #333;
+    border-bottom-left-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Official badge */
 .bot-badge {
     display: inline-block;
-    font-size: 11px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
     padding: 2px 8px;
     background: #e8f0fe;
     color: #1a73e8;
@@ -107,136 +120,130 @@ body {
 
 .disclaimer {
     font-size: 12px;
-    color: #666;
+    color: #888;
     margin-top: 6px;
+    font-style: italic;
 }
 
-/* Markdown styling */
-.message-content ul {
-    padding-left: 18px;
-    margin: 8px 0;
-}
+/* Markdown Elements */
+.message-content ul { padding-left: 20px; margin: 8px 0; }
+.message-content li { margin-bottom: 4px; }
+.message-content h4 { margin: 12px 0 6px; font-weight: 600; color: #444; }
+.answer-divider { height: 1px; background: #eee; margin: 10px 0; }
+.sources { font-size: 11px; color: #666; margin-top: 8px; }
+.copy-btn { margin-top: 5px; font-size: 10px; padding: 3px 8px; cursor: pointer; }
 
-.message-content li {
-    margin-bottom: 6px;
-}
-
-.message-content p {
-    margin-bottom: 8px;
-}
-
-.message-content h4 {
-    margin: 10px 0 6px;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-/* Divider */
-.answer-divider {
-    height: 1px;
-    background: #e6e6e6;
-    margin: 10px 0;
-}
-
-/* Sources */
-.sources {
-    font-size: 12px;
-    margin-top: 10px;
-    padding-top: 6px;
-    border-top: 1px dashed #ccc;
+/* Processing Animation */
+.processing-box {
+    background: #fff;
+    border-left: 4px solid #ccc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: #555;
 }
-
-.copy-btn {
-    margin-top: 6px;
-    font-size: 11px;
-    padding: 4px 8px;
-    border: none;
-    border-radius: 6px;
-    background: #e0e0e0;
-    cursor: pointer;
-}
-
-/* Processing animation */
-.processing-box {
-    background: #f1f3f4;
-    border-left: 4px solid #667eea;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    display: flex;
-    gap: 8px;
-}
-
 .processing-dot {
-    width: 6px;
-    height: 6px;
-    background: #667eea;
-    border-radius: 50%;
-    animation: pulse 1.4s infinite;
+    width: 6px; height: 6px; background: #667eea; border-radius: 50%;
+    animation: pulse 1s infinite;
 }
+@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-@keyframes pulse {
-    0% { opacity: .5; }
-    50% { opacity: 1; }
-    100% { opacity: .5; }
-}
-
+/* --- INPUT AREA & ANIMATION --- */
 .input-area {
-    padding: 15px;
-    border-top: 1px solid #ddd;
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    background: white;
 }
 
 .input-wrapper {
-    display: flex;
     position: relative;
+    display: flex;
+    align-items: center;
+    height: 50px; /* Fixed height is crucial for animation calculation */
+    background: #f1f3f4;
+    border-radius: 25px;
+    padding: 0 15px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
 }
 
+.input-wrapper:focus-within {
+    background: white;
+    box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+    border-color: #dfe1e5;
+}
+
+/* Search Icon */
+.search-icon {
+    color: #5f6368;
+    font-size: 16px;
+    margin-right: 12px;
+    z-index: 5;
+}
+
+/* The Input Field */
 #questionInput {
     flex: 1;
-    padding: 12px 16px;
-    border-radius: 25px;
-    border: 2px solid #ddd;
+    height: 100%;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    color: #333;
+    z-index: 2; /* Sits above the text mask */
+    position: relative;
 }
 
 #questionInput:focus {
     outline: none;
-    border-color: #667eea;
 }
 
+/* Send Button */
 #sendBtn {
-    margin-left: 10px;
-    padding: 10px 18px;
-    border-radius: 25px;
     border: none;
-    background: #667eea;
-    color: white;
-    font-weight: 600;
+    background: none;
+    color: #667eea;
+    font-size: 18px;
     cursor: pointer;
+    padding: 8px;
+    margin-left: 8px;
+    transition: transform 0.2s;
+    z-index: 5;
 }
 
-/* Animated placeholder */
+#sendBtn:hover {
+    transform: scale(1.1);
+}
+
+/* --- THE ANIMATED TEXT MASK --- */
 .text-mask {
     position: absolute;
-    left: 18px;
-    height: 40px;
+    left: 45px; /* Aligned after search icon */
+    top: 0;
+    height: 50px; /* Must match container height */
+    width: 70%;
     overflow: hidden;
-    pointer-events: none;
+    pointer-events: none; /* Let clicks pass through to input */
+    z-index: 1; /* Sits behind input */
 }
 
 .text-strip {
     display: flex;
     flex-direction: column;
+    transform: translateY(0);
 }
 
 .text-item {
-    height: 40px;
+    height: 50px; /* Must match container height EXACTLY */
     display: flex;
     align-items: center;
-    color: #999;
+    color: #5f6368; /* Placeholder gray */
+    font-size: 16px;
+    white-space: nowrap;
 }
 
+/* Hide animation when typing or focused */
 #questionInput:focus + .text-mask,
 #questionInput:valid + .text-mask {
     opacity: 0;
+    transition: opacity 0.2s ease;
 }

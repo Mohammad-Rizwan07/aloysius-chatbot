@@ -5,22 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>St. Aloysius University AI Assistant</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
 <div class="container">
     <div class="chat-wrapper">
 
-        <!-- HEADER -->
         <div class="header">
             <h1>St. Aloysius University</h1>
             <p>AI Assistant</p>
-
-            <!-- Clear button -->
             <button id="clearChat" title="Clear chat">Clear</button>
         </div>
 
-        <!-- CHAT -->
         <div class="chat-box" id="chatBox">
             <div class="message bot-message">
                 <div class="message-content">
@@ -36,29 +33,32 @@
             </div>
         </div>
 
-        <!-- INPUT -->
         <div class="input-area">
             <form id="chatForm">
                 <div class="input-wrapper">
-                    <input
-                        type="text"
-                        id="questionInput"
-                        autocomplete="off"
+                    
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+
+                    <input 
+                        type="text" 
+                        id="questionInput" 
+                        autocomplete="off" 
                         required
-                        placeholder=""
                     >
 
-                    <!-- Animated Placeholder -->
                     <div class="text-mask">
                         <div class="text-strip" id="textStrip">
-                            <div class="text-item">Admissions information</div>
-                            <div class="text-item">Programs and courses offered</div>
-                            <div class="text-item">Fees, scholarships, and funding</div>
-                            <div class="text-item">Placements and career support</div>
+                            <div class="text-item">Ask about Admissions...</div>
+                            <div class="text-item">Ask about Fees & Scholarships...</div>
+                            <div class="text-item">Ask about B.Tech Programs...</div>
+                            <div class="text-item">Ask about Hostel Facilities...</div>
+                            <div class="text-item">Ask about Placement Records...</div>
                         </div>
                     </div>
 
-                    <button type="submit" id="sendBtn">Send</button>
+                    <button type="submit" id="sendBtn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
                 </div>
             </form>
         </div>
